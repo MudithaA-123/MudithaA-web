@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ravana Ayurveda | Ancient Healing for Modern Living</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.4.1/lib/p5.min.js"></script>
+  <script src="https://unpkg.com/scrollreveal"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #047857;
+      --primary-dark: #065f46;
+      --primary-light: #d1fae5;
+      --secondary: #d97706;
+      --accent: #b45309;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      scroll-behavior: smooth;
+    }
+    
+    h1, h2, h3, h4 {
+      font-family: 'Playfair Display', serif;
+    }
+    
+    .hero-gradient {
+      background: linear-gradient(135deg, rgba(4, 120, 87, 0.9) 0%, rgba(6, 95, 70, 0.95) 100%);
+    }
+    
+    .herb-pattern {
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23047857' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    #herb-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.15;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .nav-link {
+      position: relative;
+    }
+    
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background-color: var(--secondary);
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    
+    .dosha-test-card {
+      transition: all 0.3s ease;
+    }
+    
+    .dosha-test-card:hover {
+      transform: scale(1.03);
+    }
+    
+    .floating-herbs {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-15px); }
+      100% { transform: translateY(0px); }
+    }
+  </style>
+</head>
+<body class="bg-emerald-50 text-gray-800 antialiased">
+  <!-- Floating herbs animation container -->
+  <div id="herb-canvas"></div>
+  
+  <!-- Header with animated background -->
+  <header class="relative overflow-hidden hero-gradient text-white">
+    <div class="container mx-auto px-6 py-12 md:py-24 relative z-10">
+      <div class="max-w-3xl mx-auto text-center">
+        <h1 class="text-5xl md:text-6xl font-bold mb-4 tracking-tight">Ravana Ayurveda</h1>
+        <p class="text-xl md:text-2xl font-light mb-8 italic">Ancient Healing Wisdom for Modern Wellness</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <a href="#products" class="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 rounded-full font-medium transition duration-300 transform hover:scale-105">Explore Products</a>
+          <a href="#consultation" class="border-2 border-white hover:bg-white hover:text-green-900 text-white px-8 py-3 rounded-full font-medium transition duration-300 transform hover:scale-105">Book Consultation</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-white shadow-md">
+    <div class="container mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div class="text-2xl font-bold text-green-900">Ravana<span class="text-amber-600">Ayurveda</span></div>
+        <div class="hidden md:flex space-x-8">
+          <a href="#home" class="nav-link text-gray-800 hover:text-green-900">Home</a>
+          <a href="#about" class="nav-link text-gray-800 hover:text-green-900">About</a>
+          <a href="#products" class="nav-link text-gray-800 hover:text-green-900">Products</a>
+          <a href="#dosha" class="nav-link text-gray-800 hover:text-green-900">Dosha Test</a>
+          <a href="#consultation" class="nav-link text-gray-800 hover:text-green-900">Consultation</a>
+          <a href="#contact" class="nav-link text-gray-800 hover:text-green-900">Contact</a>
+        </div>
+        <button class="md:hidden focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white herb-pattern relative overflow-hidden">
+      <div class="container mx-auto px-6">
+        <div class="flex flex-col md:flex-row items-center">
+          <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
+            <h2 class="text-4xl font-bold text-green-900 mb-6">The Ravana Ayurveda Tradition</h2>
+            <p class="text-lg text-gray-700 mb-6 leading-relaxed">
+              Drawing from the legendary wisdom of King Ravana, a master of Ayurvedic healing, our practice preserves the authentic Sri Lankan traditions of herbal medicine. For over 25 years, we've been bridging ancient knowledge with modern wellness needs.
+            </p>
+            <p class="text-lg text-gray-700 mb-8 leading-relaxed">
+              Our certified Ayurvedic doctors carefully formulate each remedy using time-honored recipes, sustainably sourced herbs, and meticulous preparation methods to ensure maximum potency and purity.
+            </p>
+            <div class="flex space-x-4">
+              <div class="bg-green-100 p-4 rounded-lg text-center flex-1">
+                <div class="text-3xl font-bold text-green-900">25+</div>
+                <div class="text-green-800">Years Experience</div>
+              </div>
+              <div class="bg-amber-100 p-4 rounded-lg text-center flex-1">
+                <div class="text-3xl font-bold text-amber-800">100%</div>
+                <div class="text-amber-800">Natural Ingredients</div>
+              </div>
+              <div class="bg-emerald-100 p-4 rounded-lg text-center flex-1">
+                <div class="text-3xl font-bold text-emerald-800">5000+</div>
+                <div class="text-emerald-800">Patients Helped</div>
+              </div>
+            </div>
+          </div>
+          <div class="md:w-1/2 relative">
+            <div class="bg-green-800 rounded-2xl p-1 floating-herbs">
+              <div class="bg-white rounded-xl p-6 h-full">
+                <h3 class="text-2xl font-bold text-green-900 mb-4">Our Core Principles</h3>
+                <ul class="space-y-4">
+                  <li class="flex items-start">
+                    <div class="bg-green-100 p-2 rounded-full mr-4">
+                      <svg class="w-5 h-5 text-green-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                    </div>
+                    <span class="text-gray-700">Authentic Ayurvedic formulations from ancient texts</span>
+                  </li>
+                  <li class="flex items-start">
+                    <div class="bg-green-100 p-2 rounded-full mr-4">
+                      <svg class="w-5 h-5 text-green-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                    </div>
+                    <span class="text-gray-700">Ethical wildcrafting and sustainable harvesting</span>
+                  </li>
+                  <li class="flex items-start">
+                    <div class="bg-green-100 p-2 rounded-full mr-4">
+                      <svg class="w-5 h-5 text-green-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                    </div>
+                    <span class="text-gray-700">Traditional preparation methods for maximum efficacy</span>
+                  </li>
+                  <li class="flex items-start">
+                    <div class="bg-green-100 p-2 rounded-full mr-4">
+                      <svg class="w-5 h-5 text-green-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                    </div>
+                    <span class="text-gray-700">Holistic approach addressing root causes, not just symptoms</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-20 bg-emerald-50">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold text-green-900 mb-4">Ayurvedic Wellness Solutions</h2>
+          <p class="text-xl text-gray-700 max-w-2xl mx-auto">Pure herbal formulations crafted to restore balance and vitality</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Product 1 -->
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden product-card transition duration-300">
+            <div class="h-48 bg-green-100 flex items-center justify-center">
+              <div class="text-6xl">🌿</div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-2xl font-bold text-green-900 mb-2">Ashwagandha Elixir</h3>
+              <p class="text-gray-600 mb-4">Adaptogenic formula to combat stress and boost energy</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xl font-bold text-green-900">€29.90</span>
+                <button class="bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded-full text-sm font-medium transition duration-300">Add to Cart</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Product 2 -->
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden product-card transition duration-300">
+            <div class="h-48 bg-amber-100 flex items-center justify-center">
+              <div class="text-6xl">🍃</div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-2xl font-bold text-green-900 mb-2">Triphala Cleanse</h3>
+              <p class="text-gray-600 mb-4">Gentle detoxification and digestive support</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xl font-bold text-green-900">€24.90</span>
+                <button class="bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded-full text-sm font-medium transition duration-300">Add to Cart</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Product 3 -->
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden product-card transition duration-300">
+            <div class="h-48 bg-emerald-100 flex items-center justify-center">
+              <div class="text-6xl">🌱</div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-2xl font-bold text-green-900 mb-2">Neem Radiance Oil</h3>
+              <p class="text-gray-600 mb-4">Purifying and nourishing skin treatment</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xl font-bold text-green-900">€32.90</span>
+                <button class="bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded-full text-sm font-medium transition duration-300">Add to Cart</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Product 4 -->
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden product-card transition duration-300">
+            <div class="h-48 bg-blue-100 flex items-center justify-center">
+              <div class="text-6xl">☕</div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-2xl font-bold text-green-900 mb-2">Pitta Cooling Tea</h3>
+              <p class="text-gray-600 mb-4">Soothing blend for heat and inflammation</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xl font-bold text-green-900">€18.90</span>
+                <button class="bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded-full text-sm font-medium transition duration-300">Add to Cart</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Product 5 -->
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden product-card transition duration-300">
+            <div class="h-48 bg-purple-100 flex items-center justify-center">
+              <div class="text-6xl">💤</div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-2xl font-bold text-green-900 mb-2">Vata Calm Syrup</h3>
+              <p class="text-gray-600 mb-4">Nervous system support for relaxation</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xl font-bold text-green-900">€27.90</span>
+                <button class="bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded-full text-sm font-medium transition duration-300">Add to Cart</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Product 6 -->
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden product-card transition duration-300">
+            <div class="h-48 bg-yellow-100 flex items-center justify-center">
+              <div class="text-6xl">🍯</div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-2xl font-bold text-green-900 mb-2">Kapha Revive</h3>
+              <p class="text-gray-600 mb-4">Energizing formula for sluggish metabolism</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xl font-bold text-green-900">€22.90</span>
+                <button class="bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded-full text-sm font-medium transition duration-300">Add to Cart</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="text-center mt-12">
+          <a href="#" class="inline-block bg-green-800 hover:bg-green-900 text-white px-8 py-3 rounded-full font-medium transition duration-300 transform hover:scale-105">View All Products</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dosha Test Section -->
+    <section id="dosha" class="py-20 bg-green-900 text-white">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold mb-4">Discover Your Dosha</h2>
+          <p class="text-xl max-w-2xl mx-auto">Take our quick assessment to understand your Ayurvedic constitution and receive personalized recommendations</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Vata -->
+          <div class="bg-white bg-opacity-10 rounded-xl p-8 dosha-test-card backdrop-filter backdrop-blur-sm border border-white border-opacity-20">
+            <div class="text-5xl mb-4">🌬️</div>
+            <h3 class="text-2xl font-bold mb-3">Vata</h3>
+            <p class="mb-4 text-white text-opacity-90">Air & Space - Creative, energetic when balanced. Prone to anxiety, dryness when imbalanced.</p>
+            <button class="bg-white text-green-900 hover:bg-opacity-90 px-4 py-2 rounded-full text-sm font-medium transition duration-300 w-full">Vata Products</button>
+          </div>
+          
+          <!-- Pitta -->
+          <div class="bg-white bg-opacity-10 rounded-xl p-8 dosha-test-card backdrop-filter backdrop-blur-sm border border-white border-opacity-20">
+            <div class="text-5xl mb-4">🔥</div>
+            <h3 class="text-2xl font-bold mb-3">Pitta</h3>
+            <p class="mb-4 text-white text-opacity-90">Fire & Water - Intelligent, focused when balanced. Prone to anger, inflammation when imbalanced.</p>
+            <button class="bg-white text-green-900 hover:bg-opacity-90 px-4 py-2 rounded-full text-sm font-medium transition duration-300 w-full">Pitta Products</button>
+          </div>
+          
+          <!-- Kapha -->
+          <div class="bg-white bg-opacity-10 rounded-xl p-8 dosha-test-card backdrop-filter backdrop-blur-sm border border-white border-opacity-20">
+            <div class="text-5xl mb-4">🌊</div>
+            <h3 class="text-2xl font-bold mb-3">Kapha</h3>
+            <p class="mb-4 text-white text-opacity-90">Earth & Water - Loving, stable when balanced. Prone to lethargy, congestion when imbalanced.</p>
+            <button class="bg-white text-green-900 hover:bg-opacity-90 px-4 py-2 rounded-full text-sm font-medium transition duration-300 w-full">Kapha Products</button>
+          </div>
+        </div>
+        
+        <div class="text-center mt-12">
+          <button class="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 rounded-full font-medium transition duration-300 transform hover:scale-105">Start Dosha Quiz</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Consultation Section -->
+    <section id="consultation" class="py-20 bg-white">
+      <div class="container mx-auto px-6">
+        <div class="flex flex-col md:flex-row items-center">
+          <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
+            <h2 class="text-4xl font-bold text-green-900 mb-6">Personalized Ayurvedic Consultation</h2>
+            <p class="text-lg text-gray-700 mb-6 leading-relaxed">
+              Our certified Ayurvedic doctors provide comprehensive health assessments based on your unique constitution (Prakriti) and current imbalances (Vikriti). Each consultation includes:
+            </p>
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-start">
+                <div class="bg-green-100 p-1 rounded-full mr-3 mt-1">
+                  <svg class="w-4 h-4 text-green-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </div>
+                <span class="text-gray-700">Detailed Dosha analysis</span>
+              </li>
+              <li class="flex items-start">
+                <div class="bg-green-100 p-1 rounded-full mr-3 mt-1">
+                  <svg class="w-4 h-4 text-green-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </div>
+                <span class="text-gray-700">Customized herbal recommendations</span>
+              </li>
+              <li class="flex items-start">
+                <div class="bg-green-100 p-1 rounded-full mr-3 mt-1">
+                  <svg class="w-4 h-4 text-green-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </div>
+                <span class="text-gray-700">Personalized diet and lifestyle plan</span>
+              </li>
+              <li class="flex items-start">
+                <div class="bg-green-100 p-1 rounded-full mr-3 mt-1">
+                  <svg class="w-4 h-4 text-green-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </div>
+                <span class="text-gray-700">Follow-up recommendations</span>
+              </li>
+            </ul>
+            <button class="bg-green-800 hover:bg-green-900 text-white px-8 py-3 rounded-full font-medium transition duration-300 transform hover:scale-105">Book Your Session</button>
+          </div>
+          <div class="md:w-1/2 bg-green-50 rounded-xl p-8">
+            <h3 class="text-2xl font-bold text-green-900 mb-6">Consultation Options</h3>
+            <div class="space-y-6">
+              <div class="bg-white p-6 rounded-lg shadow-sm border border-green-100">
+                <h4 class="text-xl font-bold text-green-900 mb-2">Initial Consultation</h4>
+                <p class="text-gray-600 mb-4">90-minute comprehensive health assessment and personalized plan</p>
+                <div class="flex justify-between items-center">
+                  <span class="text-xl font-bold text-green-900">€120</span>
+                  <button class="bg-green-100 hover:bg-green-200 text-green-900 px-4 py-2 rounded-full text-sm font-medium transition duration-300">Book Now</button>
+                </div>
+              </div>
+              <div class="bg-white p-6 rounded-lg shadow-sm border border-green-100">
+                <h4 class="text-xl font-bold text-green-900 mb-2">Follow-up Session</h4>
+                <p class="text-gray-600 mb-4">45-minute check-in to adjust your wellness plan</p>
+                <div class="flex justify-between items-center">
+                  <span class="text-xl font-bold text-green-900">€75</span>
+                  <button class="bg-green-100 hover:bg-green-200 text-green-900 px-4 py-2 rounded-full text-sm font-medium transition duration-300">Book Now</button>
+                </div>
+              </div>
+              <div class="bg-white p-6 rounded-lg shadow-sm border border-green-100">
+                <h4 class="text-xl font-bold text-green-900 mb-2">Wellness Package</h4>
+                <p class="text-gray-600 mb-4">Initial consultation + 3 follow-ups (save 15%)</p>
+                <div class="flex justify-between items-center">
+                  <span class="text-xl font-bold text-green-900">€285</span>
+                  <button class="bg-green-100 hover:bg-green-200 text-green-900 px-4 py-2 rounded-full text-sm font-medium transition duration-300">Book Now</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-20 bg-emerald-50">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold text-green-900 mb-4">Healing Stories</h2>
+          <p class="text-xl text-gray-700 max-w-2xl mx-auto">What our community says about their Ayurvedic journey</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Testimonial 1 -->
+          <div class="bg-white p-8 rounded-xl shadow-md">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-900 font-bold mr-4">S</div>
+              <div>
+                <h4 class="font-bold">Sarah M.</h4>
+                <div class="flex text-amber-400">
+                  ★ ★ ★ ★ ★
+                </div>
+              </div>
+            </div>
+            <p class="text-gray-700 italic">"The Ashwagandha Elixir has transformed my stress levels and sleep quality. After years of struggling with anxiety, I finally feel grounded and centered."</p>
+          </div>
+          
+          <!-- Testimonial 2 -->
+          <div class="bg-white p-8 rounded-xl shadow-md">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-900 font-bold mr-4">J</div>
+              <div>
+                <h4 class="font-bold">James L.</h4>
+                <div class="flex text-amber-400">
+                  ★ ★ ★ ★ ★
+                </div>
+              </div>
+            </div>
+            <p class="text-gray-700 italic">"My consultation revealed I was a Pitta-Kapha type. The dietary changes and herbal regimen have dramatically improved my digestion and energy levels."</p>
+          </div>
+          
+          <!-- Testimonial 3 -->
+          <div class="bg-white p-8 rounded-xl shadow-md">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-900 font-bold mr-4">A</div>
+              <div>
+                <h4 class="font-bold">Anika P.</h4>
+                <div class="flex text-amber-400">
+                  ★ ★ ★ ★ ★
+                </div>
+              </div>
+            </div>
+            <p class="text-gray-700 italic">"The Neem Radiance Oil cleared my persistent acne when nothing else worked. I'm amazed by the power of these traditional remedies."</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blog Preview Section -->
+    <section class="py-20 bg-white">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold text-green-900 mb-4">Ayurvedic Wisdom</h2>
+          <p class="text-xl text-gray-700 max-w-2xl mx-auto">Explore our latest articles on holistic health</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Article 1 -->
+          <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition duration-300">
+            <div class="h-48 bg-green-100 flex items-center justify-center">
+              <div class="text-4xl">📖</div>
+            </div>
+            <div class="p-6">
+              <div class="text-sm text-green-800 mb-2">Seasonal Wellness • 5 min read</div>
+              <h3 class="text-xl font-bold text-green-900 mb-3">Summer Pitta Pacifying Rituals</h3>
+              <p class="text-gray-600 mb-4">Discover cooling foods, herbs and daily practices to keep your Pitta balanced during the hot months.</p>
+              <a href="#" class="text-green-800 font-medium hover:underline">Read More →</a>
+            </div>
+          </div>
+          
+          <!-- Article 2 -->
+          <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition duration-300">
+            <div class="h-48 bg-amber-100 flex items-center justify-center">
+              <div class="text-4xl">🌿</div>
+            </div>
+            <div class="p-6">
+              <div class="text-sm text-green-800 mb-2">Herbal Medicine • 7 min read</div>
+              <h3 class="text-xl font-bold text-green-900 mb-3">The Magic of Triphala</h3>
+              <p class="text-gray-600 mb-4">Learn about this classic Ayurvedic formula and its remarkable benefits for digestion, detoxification and longevity.</p>
+              <a href="#" class="text-green-800 font-medium hover:underline">Read More →</a>
+            </div>
+          </div>
+          
+          <!-- Article 3 -->
+          <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition duration-300">
+            <div class="h-48 bg-emerald-100 flex items-center justify-center">
+              <div class="text-4xl">🧘</div>
+            </div>
+            <div class="p-6">
+              <div class="text-sm text-green-800 mb-2">Daily Routine • 4 min read</div>
+              <h3 class="text-xl font-bold text-green-900 mb-3">Dinacharya: Your Ideal Ayurvedic Day</h3>
+              <p class="text-gray-600 mb-4">Align with nature's rhythms with these time-tested daily practices for optimal health.</p>
+              <a href="#" class="text-green-800 font-medium hover:underline">Read More →</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="text-center mt-12">
+          <a href="#" class="inline-block border-2 border-green-800 text-green-800 hover:bg-green-800 hover:text-white px-8 py-3 rounded-full font-medium transition duration-300">View All Articles</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-green-800 text-white">
+      <div class="container mx-auto px-6">
+        <div class="flex flex-col md:flex-row">
+          <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
+            <h2 class="text-4xl font-bold mb-6">Connect With Us</h2>
+            <p class="text-lg mb-8 leading-relaxed">
+              Have questions about Ayurveda or our products? Our team is here to guide you on your wellness journey.
+            </p>
+            
+            <div class="space-y-6">
+              <div class="flex items-start">
+                <div class="bg-green-700 p-3 rounded-full mr-4">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-lg">Email</h4>
+                  <p>care@ravanaayurveda.com</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="bg-green-700 p-3 rounded-full mr-4">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-lg">Phone</h4>
+                  <p>+49 176 1234 5678</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="bg-green-700 p-3 rounded-full mr-4">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-lg">Visit Us</h4>
+                  <p>Ayurveda Wellness Center<br>Berlin, Germany</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-8">
+              <h4 class="font-bold text-lg mb-4">Follow Our Journey</h4>
+              <div class="flex space-x-4">
+                <a href="#" class="bg-green-700 hover:bg-green-600 p-3 rounded-full transition duration-300">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/>
+                  </svg>
+                </a>
+                <a href="#" class="bg-green-700 hover:bg-green-600 p-3 rounded-full transition duration-300">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                  </svg>
+                </a>
+                <a href="#" class="bg-green-700 hover:bg-green-600 p-3 rounded-full transition duration-300">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="md:w-1/2 bg-white bg-opacity-10 rounded-xl p-8 backdrop-filter backdrop-blur-sm border border-white border-opacity-20">
+            <h3 class="text-2xl font-bold mb-6">Send Us a Message</h3>
+            <form class="space-y-4">
+              <div>
+                <label for="name" class="block mb-1">Name</label>
+                <input type="text" id="name" class="w-full bg-white bg-opacity-20 border border-white border-opacity-30 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent placeholder-white placeholder-opacity-70">
+              </div>
+              <div>
+                <label for="email" class="block mb-1">Email</label>
+                <input type="email" id="email" class="w-full bg-white bg-opacity-20 border border-white border-opacity-30 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent placeholder-white placeholder-opacity-70">
+              </div>
+              <div>
+                <label for="subject" class="block mb-1">Subject</label>
+                <select id="subject" class="w-full bg-white bg-opacity-20 border border-white border-opacity-30 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-white">
+                  <option value="" disabled selected>Select a topic</option>
+                  <option value="products">Product Inquiry</option>
+                  <option value="consultation">Consultation</option>
+                  <option value="general">General Question</option>
+                </select>
+              </div>
+              <div>
+                <label for="message" class="block mb-1">Message</label>
+                <textarea id="message" rows="4" class="w-full bg-white bg-opacity-20 border border-white border-opacity-30 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent placeholder-white placeholder-opacity-70"></textarea>
+              </div>
+              <button type="submit" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-medium transition duration-300 w-full">Send Message</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Newsletter Section -->
+  <section class="bg-emerald-100 py-12">
+    <div class="container mx-auto px-6 text-center">
+      <h3 class="text-2xl font-bold text-green-900 mb-4">Join Our Wellness Community</h3>
+      <p class="text-gray-700 max-w-2xl mx-auto mb-6">Receive Ayurvedic seasonal guides, exclusive offers, and wellness tips straight to your inbox.</p>
+      <form class="max-w-md mx-auto flex">
+        <input type="email" placeholder="Your email address" class="flex-grow px-4 py-3 rounded-l-lg border-0 focus:outline-none focus:ring-2 focus:ring-green-500">
+        <button type="submit" class="bg-green-800 hover:bg-green-900 text-white px-6 py-3 rounded-r-lg font-medium transition duration-300">Subscribe</button>
+      </form>
+      <p class="text-sm text-gray-600 mt-3">We respect your privacy. Unsubscribe at any time.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-green-900 text-white py-12">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <h4 class="text-xl font-bold mb-4">Ravana Ayurveda</h4>
+          <p class="text-green-200">Ancient healing wisdom for modern wellness. Authentic Sri Lankan Ayurveda since 1998.</p>
+        </div>
+        <div>
+          <h4 class="text-lg font-bold mb-4">Quick Links</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-green-200 hover:text-white transition duration-300">Home</a></li>
+            <li><a href="#" class="text-green-200 hover:text-white transition duration-300">About</a></li>
+            <li><a href="#" class="text-green-200 hover:text-white transition duration-300">Products</a></li>
+            <li><a href="#" class="text-green-200 hover:text-white transition duration-300">Consultations</a></li>
+            <li><a href="#" class="text-green-200 hover:text-white transition duration-300">Blog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-lg font-bold mb-4">Information</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-green-200 hover:text-white transition duration-300">Shipping Policy</a></li>
+            <li><a href="#" class="text-green-200 hover:text-white transition duration-300">Returns & Refunds</a></li>
+            <li><a href="#" class="text-green-200 hover:text-white transition duration-300">Privacy Policy</a></li>
+            <li><a href="#" class="text-green-200 hover:text-white transition duration-300">Terms of Service</a></li>
+            <li><a href="#" class="text-green-200 hover:text-white transition duration-300">FAQ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-lg font-bold mb-4">Contact</h4>
+          <address class="not-italic text-green-200">
+            Ayurveda Wellness Center<br>
+            Berlin, Germany<br><br>
+            Email: care@ravanaayurveda.com<br>
+            Phone: +49 176 1234 5678
+          </address>
+        </div>
+      </div>
+      <div class="border-t border-green-800 mt-12 pt-8 text-center text-green-300">
+        <p>&copy; 2025 Ravana Ayurveda. All rights reserved. Crafted with wisdom and care.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize ScrollReveal
+    ScrollReveal().reveal('section', {
+      delay: 200,
+      distance: '20px',
+      origin: 'bottom',
+      interval: 100,
+      easing: 'cubic-bezier(0.5, 0, 0, 1)',
+    });
+    
+    // Simple Three.js herb visualization
+    document.addEventListener('DOMContentLoaded', function() {
+      // Only initialize Three.js if the canvas exists
+      const canvasContainer = document.getElementById('herb-canvas');
+      if (canvasContainer) {
+        // Set up Three.js scene
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        canvasContainer.appendChild(renderer.domElement);
+        
+        // Create herb-like particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particleCount = 500;
+        
+        const posArray = new Float32Array(particleCount * 3);
+        for(let i = 0; i < particleCount * 3; i++) {
+          posArray[i] = (Math.random() - 0.5) * 10;
+        }
+        
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        
+        const particlesMaterial = new THREE.PointsMaterial({
+          size: 0.05,
+          color: 0x047857,
+          transparent: true,
+          opacity: 0.8
+        });
+        
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+        
+        camera.position.z = 3;
+        
+        // Animation loop
+        function animate() {
+          requestAnimationFrame(animate);
+          particlesMesh.rotation.x += 0.0005;
+          particlesMesh.rotation.y += 0.001;
+          renderer.render(scene, camera);
+        }
+        
+        animate();
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+      }
+      
+      // Simple p5.js background animation
+      const herbSketch = function(p) {
+        let herbs = [];
+        
+        p.setup = function() {
+          const canvas = p.createCanvas(p.windowWidth, p.windowHeight);
+          canvas.position(0, 0);
+          canvas.style('z-index', '-1');
+          
+          // Create herb-like elements
+          for (let i = 0; i < 30; i++) {
+            herbs.push({
+              x: p.random(p.width),
+              y: p.random(p.height),
+              size: p.random(10, 30),
+              speed: p.random(0.2, 0.5),
+              angle: p.random(p.TWO_PI)
+            });
+          }
+        };
+        
+        p.draw = function() {
+          p.clear();
+          p.noStroke();
+          
+          for (let herb of herbs) {
+            // Update position
+            herb.angle += herb.speed * 0.01;
+            herb.y += p.sin(herb.angle) * 0.5;
+            
+            // Draw herb
+            p.fill(4, 120, 87, 30);
+            p.ellipse(herb.x, herb.y, herb.size, herb.size * 1.5);
+            
+            // Reset position if off screen
+            if (herb.y > p.height + herb.size) {
+              herb.y = -herb.size;
+              herb.x = p.random(p.width);
+            }
+          }
+        };
+        
+        p.windowResized = function() {
+          p.resizeCanvas(p.windowWidth, p.windowHeight);
+        };
+      };
+      
+      new p5(herbSketch, 'herb-canvas');
+    });
+  </script>
+</body>
+</html>
